@@ -34,7 +34,8 @@
 
     tmp = periodicswitching(s, [1, 2])
     tmp = periodicswitching(tmp.s, tmp.period, round(tmp.growthrate, 4)) # Avoid difference of floating point rounding
-    @test sprint(show, tmp) == "Periodic switching of growth rate 3.9174 and modes: [1, 2] for the transitions [1, 2]"
+    #@test sprint(show, tmp) == "Periodic switching of growth rate 3.9174 and modes: [1, 2] for the transitions [1, 2]"
+    @test sprint(show, tmp) == "PSW(3.9174, [1, 2])"
     smp = periodicswitching(s, [1, 2])
     #@test smp != tmp
     @test smp != periodicswitching(s, [2, 1, 2, 1])
@@ -44,7 +45,6 @@
     for solver in sdp_solvers
         sosdata(s).lb = 0
         tol = ismosek(solver) ? 1e-5 : 5e-4
-        println("  > With solver $(typeof(solver))")
         lb, ub = soslyapb(s, 1, solver=solver, tol=tol)
         @test log(lb) ≈ log(2.814640557) rtol=tol
         @test log(ub) ≈ log(3.980502849) rtol=tol
